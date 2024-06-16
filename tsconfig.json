@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "sourceMap": true,
+    "lib": ["es5", "dom"],
+    "noUnusedLocals": true,
+    "module": "CommonJS",
+    "rootDir": "./src",
+    "outDir": "./",
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src"],
+  "files": ["src/main.ts"]
+}
