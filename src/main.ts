@@ -1,10 +1,9 @@
-import { canvas } from "./Canvas.js";
-
+import { Snake } from "./Snake.js";
 class Main {
-  public static main() {
-    canvas.canvasContext.fillStyle = "red";
-    canvas.canvasContext.fillRect(10, 10, 200, 200);
-  }
+    public static main() {
+        const snake = new Snake();
+        snake.drawSnake();
+    }
 }
 
 Main.main();
