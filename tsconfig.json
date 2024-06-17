@@ -4,11 +4,11 @@
     "sourceMap": true,
     "lib": ["es5", "dom"],
     "noUnusedLocals": true,
-    "module": "CommonJS",
+    "module": "ES2015",
     "rootDir": "./src",
-    "outDir": "./",
+    "outDir": "./dist",
     "forceConsistentCasingInFileNames": true
   },
   "include": ["src"],
-  "files": ["src/main.ts"]
+  "files": ["src/Main.ts"]
 }
