@@ -1,9 +1,13 @@
 import { Snake } from "./Snake.js";
 class Main {
-    public static main() {
+    public main() {
         const snake = new Snake();
-        snake.drawSnake();
+        snake.registerDirectionHandler();
+        setInterval(() => {
+            snake.init();
+        }, 500);
     }
 }
 
-Main.main();
+const app = new Main();
+app.main();

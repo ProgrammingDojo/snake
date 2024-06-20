@@ -22,11 +22,8 @@ export interface Location {
  * Block is the basic unit that forms the snake, food and obstacle, it's a square
  */
 export class Block {
-    constructor(
-        public category: Category,
-        public location: Location,
-        public width = 10,
-    ) {}
+    public sideLength = 10;
+    constructor(public category: Category, public location: Location) {}
 
     chooseColorByCategory(canvasContext: CanvasRenderingContext2D): void {
         switch (this.category) {
@@ -49,8 +46,8 @@ export class Block {
         canvasContext.fillRect(
             this.location.x,
             this.location.y,
-            this.width,
-            this.width
+            this.sideLength,
+            this.sideLength
         );
     }
 
@@ -59,8 +56,8 @@ export class Block {
         canvasContext.strokeRect(
             this.location.x,
             this.location.y,
-            this.width,
-            this.width
+            this.sideLength,
+            this.sideLength
         );
     }
 
