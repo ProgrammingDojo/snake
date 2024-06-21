@@ -62,7 +62,11 @@ export class Snake {
                 break;
         }
     }
-
+    /**
+     * check the x value to handle the cases when the snake go out of the boundary
+     * @param x x
+     * @returns
+     */
     private resetBoundaryX(x: number): number {
         if (x > canvas.canvasWidth) return 0;
         if (x <= 0) return canvas.canvasWidth;
@@ -88,9 +92,9 @@ export class Snake {
             case Direction.UP:
                 this.snake.unshift(
                     new Block(Category.BODY, {
-                        x: currentSnakeHead.location.x,
+                        x: currentSnakeHead.axies.x,
                         y: this.resetBoundaryY(
-                            currentSnakeHead.location.y - bodyBlockLength
+                            currentSnakeHead.axies.y - bodyBlockLength
                         ),
                     })
                 );
@@ -99,18 +103,18 @@ export class Snake {
                 this.snake.unshift(
                     new Block(Category.BODY, {
                         x: this.resetBoundaryX(
-                            currentSnakeHead.location.x - bodyBlockLength
+                            currentSnakeHead.axies.x - bodyBlockLength
                         ),
-                        y: currentSnakeHead.location.y,
+                        y: currentSnakeHead.axies.y,
                     })
                 );
                 break;
             case Direction.DOWN:
                 this.snake.unshift(
                     new Block(Category.BODY, {
-                        x: currentSnakeHead.location.x,
+                        x: currentSnakeHead.axies.x,
                         y: this.resetBoundaryY(
-                            currentSnakeHead.location.y + bodyBlockLength
+                            currentSnakeHead.axies.y + bodyBlockLength
                         ),
                     })
                 );
@@ -119,9 +123,9 @@ export class Snake {
                 this.snake.unshift(
                     new Block(Category.BODY, {
                         x: this.resetBoundaryX(
-                            currentSnakeHead.location.x + bodyBlockLength
+                            currentSnakeHead.axies.x + bodyBlockLength
                         ),
-                        y: currentSnakeHead.location.y,
+                        y: currentSnakeHead.axies.y,
                     })
                 );
                 break;
@@ -133,8 +137,6 @@ export class Snake {
     }
 
     private drawSnake() {
-        const canvasContext = canvas.canvasContext;
-        canvasContext.clearRect(0, 0, canvas.canvasWidth, canvas.canvasHeight);
         this.snake.forEach((block) => {
             block.drawBlockOnCanvas();
         });

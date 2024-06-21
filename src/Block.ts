@@ -14,7 +14,7 @@ export enum Category {
  * x is the block's distance to the left edge
  * y is the block's distance to the top edge
  */
-export interface Location {
+export interface Axies {
     x: number;
     y: number;
 }
@@ -23,7 +23,7 @@ export interface Location {
  */
 export class Block {
     public sideLength = 10;
-    constructor(public category: Category, public location: Location) {}
+    constructor(public category: Category, public axies: Axies) {}
 
     chooseColorByCategory(canvasContext: CanvasRenderingContext2D): void {
         switch (this.category) {
@@ -44,8 +44,8 @@ export class Block {
 
     drawBlockMain(canvasContext: CanvasRenderingContext2D): void {
         canvasContext.fillRect(
-            this.location.x,
-            this.location.y,
+            this.axies.x,
+            this.axies.y,
             this.sideLength,
             this.sideLength
         );
@@ -54,8 +54,8 @@ export class Block {
     drawBlockStroke(canvasContext: CanvasRenderingContext2D): void {
         canvasContext.strokeStyle = "white";
         canvasContext.strokeRect(
-            this.location.x,
-            this.location.y,
+            this.axies.x,
+            this.axies.y,
             this.sideLength,
             this.sideLength
         );

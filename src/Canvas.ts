@@ -13,3 +13,4 @@ class Canvas {
 }
 
 export const canvas = new Canvas();
+
