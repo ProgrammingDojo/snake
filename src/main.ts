@@ -5,7 +5,7 @@ class Main {
         snake.registerDirectionHandler();
         setInterval(() => {
             snake.init();
-        }, 500);
+        }, 200);
     }
 }
 

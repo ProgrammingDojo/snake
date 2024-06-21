@@ -62,9 +62,22 @@ export class Snake {
                 break;
         }
     }
+
+    private resetBoundaryX(x: number): number {
+        if (x > canvas.canvasWidth) return 0;
+        if (x <= 0) return canvas.canvasWidth;
+        return x;
+    }
+
+    private resetBoundaryY(y: number): number {
+        if (y > canvas.canvasHeight) return 0;
+        if (y <= 0) return canvas.canvasHeight;
+        return y;
+    }
+
     /**
      * the snake has a head and tail,
-     * for each frame, the snake's head will move to the next place 
+     * for each frame, the snake's head will move to the next place
      * and the snake's tail will be removed
      * @param direction the direction snake move
      */
@@ -76,14 +89,18 @@ export class Snake {
                 this.snake.unshift(
                     new Block(Category.BODY, {
                         x: currentSnakeHead.location.x,
-                        y: currentSnakeHead.location.y - bodyBlockLength,
+                        y: this.resetBoundaryY(
+                            currentSnakeHead.location.y - bodyBlockLength
+                        ),
                     })
                 );
                 break;
             case Direction.LEFT:
                 this.snake.unshift(
                     new Block(Category.BODY, {
-                        x: currentSnakeHead.location.x - bodyBlockLength,
+                        x: this.resetBoundaryX(
+                            currentSnakeHead.location.x - bodyBlockLength
+                        ),
                         y: currentSnakeHead.location.y,
                     })
                 );
@@ -92,14 +109,18 @@ export class Snake {
                 this.snake.unshift(
                     new Block(Category.BODY, {
                         x: currentSnakeHead.location.x,
-                        y: currentSnakeHead.location.y + bodyBlockLength,
+                        y: this.resetBoundaryY(
+                            currentSnakeHead.location.y + bodyBlockLength
+                        ),
                     })
                 );
                 break;
             case Direction.RIGHT:
                 this.snake.unshift(
                     new Block(Category.BODY, {
-                        x: currentSnakeHead.location.x + bodyBlockLength,
+                        x: this.resetBoundaryX(
+                            currentSnakeHead.location.x + bodyBlockLength
+                        ),
                         y: currentSnakeHead.location.y,
                     })
                 );
