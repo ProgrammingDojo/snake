@@ -38,23 +38,36 @@ export class Snake {
     private directionHandler(event: KeyboardEvent): void {
         switch (event.key.toLowerCase()) {
             case "w":
-                this.direction = Direction.UP;
+                // prevent the snake directly turn to its opposite side.
+                if (this.direction !== Direction.DOWN) {
+                    this.direction = Direction.UP;
+                }
                 break;
             case "a":
-                this.direction = Direction.LEFT;
+                if (this.direction !== Direction.RIGHT) {
+                    this.direction = Direction.LEFT;
+                }
                 break;
             case "s":
-                this.direction = Direction.DOWN;
+                if (this.direction !== Direction.UP) {
+                    this.direction = Direction.DOWN;
+                }
                 break;
             case "d":
-                this.direction = Direction.RIGHT;
-                console.log("right");
+                if (this.direction !== Direction.LEFT) {
+                    this.direction = Direction.RIGHT;
+                }
                 break;
             default:
                 break;
         }
     }
-
+    /**
+     * the snake has a head and tail,
+     * for each frame, the snake's head will move to the next place 
+     * and the snake's tail will be removed
+     * @param direction the direction snake move
+     */
     private moveSnake(direction: Direction): void {
         const currentSnakeHead = this.snake[0];
 
@@ -92,12 +105,6 @@ export class Snake {
                 );
                 break;
             default:
-                this.snake.unshift(
-                    new Block(Category.BODY, {
-                        x: currentSnakeHead.location.x,
-                        y: currentSnakeHead.location.y - bodyBlockLength,
-                    })
-                );
                 break;
         }
 
