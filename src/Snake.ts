@@ -91,7 +91,7 @@ export class Snake {
      * and the snake's tail will be removed
      * @param direction the direction snake move
      */
-    private moveSnake(direction: Direction): void {
+    private moveSnakeHead(direction: Direction): void {
         const currentSnakeHead = this.snake[0];
 
         switch (direction) {
@@ -138,7 +138,9 @@ export class Snake {
             default:
                 break;
         }
+    }
 
+    private deleteSnakeTail() {
         this.snake.pop();
     }
 
@@ -165,7 +167,7 @@ export class Snake {
         return true;
     }
 
-    public hitObstacle(obstacles: Block[]): void {
+    public hitObstacleOrHealth(obstacles: Block[], healths: Block[]): void {
         const head = this.snake[0];
         const headLocation = head.axies;
         obstacles.forEach((obstacle, index) => {
@@ -175,10 +177,17 @@ export class Snake {
                 this.initSnake();
             }
         });
+        healths.forEach((health, index) => {
+            if (this.shallowEqual(health.axies, headLocation)) {
+                healths.splice(index, 1);
+                this.moveSnakeHead(this.direction);
+            }
+        });
     }
 
     public init(): void {
-        this.moveSnake(this.direction);
+        this.moveSnakeHead(this.direction);
+        this.deleteSnakeTail();
         this.drawSnake();
     }
 }

@@ -74,6 +74,6 @@ export class Game {
     public init() {
         this.drawObstaclesAndHealths();
         snake.init();
-        snake.hitObstacle(this.obstacles);
+        snake.hitObstacleOrHealth(this.obstacles, this.healths);
     }
 }
