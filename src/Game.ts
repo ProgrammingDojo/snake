@@ -20,9 +20,9 @@ export class Game {
     constructor(
         public level = 1,
         private obstacles: Block[] = [],
-        private healths: Block[] = []
+        private foods: Block[] = []
     ) {
-        this.createHealth();
+        this.createFoods();
         this.createObstacle();
     }
     /**
@@ -51,9 +51,9 @@ export class Game {
         }
     }
 
-    createHealth() {
+    createFoods() {
         for (let i = 0; i < this.levelHealthNumber; i++) {
-            this.healths.push(
+            this.foods.push(
                 new Block(Category.FOOD, {
                     x: this.getValidAxisNumber(canvasWidth),
                     y: this.getValidAxisNumber(canvasHeight),
@@ -62,18 +62,19 @@ export class Game {
         }
     }
 
-    drawObstaclesAndHealths() {
+    drawObstaclesAndFoods() {
         for (const obstacle of this.obstacles) {
             obstacle.drawBlockOnCanvas();
         }
-        for (const health of this.healths) {
+        for (const health of this.foods) {
             health.drawBlockOnCanvas();
         }
     }
 
     public init() {
-        this.drawObstaclesAndHealths();
+        this.drawObstaclesAndFoods();
         snake.init();
-        snake.hitObstacleOrHealth(this.obstacles, this.healths);
+        snake.checkObstacleOrHealth(this.obstacles, this.foods);
+        snake.checkSnakeBody();
     }
 }

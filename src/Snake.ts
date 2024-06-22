@@ -150,7 +150,7 @@ export class Snake {
         });
     }
 
-    private shallowEqual(object1: Axies, object2: Axies) {
+    private isEqualAxies(object1: Axies, object2: Axies) {
         const keys1 = Object.keys(object1);
         const keys2 = Object.keys(object2);
 
@@ -167,22 +167,34 @@ export class Snake {
         return true;
     }
 
-    public hitObstacleOrHealth(obstacles: Block[], healths: Block[]): void {
+    public checkObstacleOrHealth(obstacles: Block[], foods: Block[]): void {
         const head = this.snake[0];
         const headLocation = head.axies;
         obstacles.forEach((obstacle, index) => {
-            if (this.shallowEqual(obstacle.axies, headLocation)) {
+            if (this.isEqualAxies(obstacle.axies, headLocation)) {
                 obstacles.splice(index, 1);
                 this.healthPoint -= 1;
                 this.initSnake();
             }
         });
-        healths.forEach((health, index) => {
-            if (this.shallowEqual(health.axies, headLocation)) {
-                healths.splice(index, 1);
+        foods.forEach((food, index) => {
+            if (this.isEqualAxies(food.axies, headLocation)) {
+                foods.splice(index, 1);
                 this.moveSnakeHead(this.direction);
             }
         });
+    }
+
+    public checkSnakeBody(){
+        const head = this.snake[0];
+        const headLocation = head.axies;
+        const snakeBody = this.snake.slice(1);
+        snakeBody.forEach(block => {
+            if(this.isEqualAxies(block.axies, headLocation)){
+                this.healthPoint -= 1;
+                this.initSnake();
+            }
+        })
     }
 
     public init(): void {
