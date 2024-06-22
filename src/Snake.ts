@@ -1,4 +1,4 @@
-import { Block, Category } from "./Block.js";
+import { Axies, Block, Category } from "./Block.js";
 import { canvas } from "./Canvas.js";
 
 const initialX = canvas.canvasWidth / 2;
@@ -15,20 +15,26 @@ enum Direction {
 }
 
 export class Snake {
-    private direction = Direction.UP;
+    private direction: Direction;
+    private snake: Block[] = [];
+    private healthPoint = 3;
+    constructor() {
+        this.initSnake();
+        // Bind the directionHandler method to this instance
+        this.directionHandler = this.directionHandler.bind(this);
+    }
 
-    constructor(public healthPoint = 3, public snake: Block[] = []) {
+    private initSnake() {
+        this.snake = [];
+        this.direction = Direction.UP;
         for (let i = 0; i < initialLength; i++) {
-            snake.push(
+            this.snake.push(
                 new Block(Category.BODY, {
                     x: initialX,
                     y: i * bodyBlockLength + initialY,
                 })
             );
         }
-
-        // Bind the directionHandler method to this instance
-        this.directionHandler = this.directionHandler.bind(this);
     }
 
     public registerDirectionHandler(): void {
@@ -139,6 +145,35 @@ export class Snake {
     private drawSnake() {
         this.snake.forEach((block) => {
             block.drawBlockOnCanvas();
+        });
+    }
+
+    private shallowEqual(object1: Axies, object2: Axies) {
+        const keys1 = Object.keys(object1);
+        const keys2 = Object.keys(object2);
+
+        if (keys1.length !== keys2.length) {
+            return false;
+        }
+
+        for (let key of keys1) {
+            if (object1[key] !== object2[key]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public hitObstacle(obstacles: Block[]): void {
+        const head = this.snake[0];
+        const headLocation = head.axies;
+        obstacles.forEach((obstacle, index) => {
+            if (this.shallowEqual(obstacle.axies, headLocation)) {
+                obstacles.splice(index, 1);
+                this.healthPoint -= 1;
+                this.initSnake();
+            }
         });
     }
 

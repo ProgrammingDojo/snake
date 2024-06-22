@@ -1,5 +1,6 @@
 import { canvas } from "./Canvas.js";
 import { Block, Category } from "./Block.js";
+import { Snake } from "./Snake.js";
 
 const canvasWidth = canvas.canvasWidth;
 const canvasHeight = canvas.canvasHeight;
@@ -7,20 +8,27 @@ const blockSample = new Block(Category.OBSTACLE, { x: 0, y: 0 });
 const blockLength = blockSample.sideLength;
 const maxBlockNumber =
     (canvasWidth / blockLength) * (canvasHeight / blockLength);
+
+const snake = new Snake();
+snake.registerDirectionHandler();
+
 export class Game {
     private levelObstacleNumber =
         Math.floor(maxBlockNumber * 0.01) * this.level;
     private levelHealthNumber = Math.floor(maxBlockNumber * 0.01) * this.level;
-    private obstacles: Block[] = [];
-    private healths: Block[] = [];
-    constructor(public level = 1) {
+
+    constructor(
+        public level = 1,
+        private obstacles: Block[] = [],
+        private healths: Block[] = []
+    ) {
         this.createHealth();
         this.createObstacle();
     }
     /**
-     * 
+     *
      * @param x send the canvas width or height into this utility function
-     * @returns a x or y axis value that is on grid 
+     * @returns a x or y axis value that is on grid
      */
     getValidAxisNumber(x: number): number {
         const validAxisNumberList = [];
@@ -65,5 +73,7 @@ export class Game {
 
     public init() {
         this.drawObstaclesAndHealths();
+        snake.init();
+        snake.hitObstacle(this.obstacles);
     }
 }
