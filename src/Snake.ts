@@ -7,7 +7,7 @@ const bodyBlockSample = new Block(Category.BODY, { x: 0, y: 0 });
 const bodyBlockLength = bodyBlockSample.sideLength;
 const initialLength = 3;
 
-enum Direction {
+export enum Direction {
     UP,
     LEFT,
     DOWN,
@@ -23,8 +23,11 @@ export class Snake {
         // Bind the directionHandler method to this instance
         this.directionHandler = this.directionHandler.bind(this);
     }
-
-    private initSnake() {
+    /**
+     * @effect: initiate this.snake
+     * @effect: initiate this.direction
+     */
+    private initSnake(): void {
         this.snake = [];
         this.direction = Direction.UP;
         for (let i = 0; i < initialLength; i++) {
@@ -40,7 +43,11 @@ export class Snake {
     public registerDirectionHandler(): void {
         window.addEventListener("keydown", this.directionHandler);
     }
-
+    /**
+     *
+     * @param event press keyboard
+     * @effect change this.direction based on keyboard press
+     */
     private directionHandler(event: KeyboardEvent): void {
         switch (event.key.toLowerCase()) {
             case "w":
@@ -70,68 +77,58 @@ export class Snake {
     }
     /**
      * check the x value to handle the cases when the snake go out of the boundary
-     * @param x x
-     * @returns
+     * @param x axies x value
+     * @returns reset x value
      */
     private resetBoundaryX(x: number): number {
         if (x > canvas.canvasWidth) return 0;
-        if (x <= 0) return canvas.canvasWidth;
+        if (x < 0) return canvas.canvasWidth;
         return x;
     }
 
     private resetBoundaryY(y: number): number {
         if (y > canvas.canvasHeight) return 0;
-        if (y <= 0) return canvas.canvasHeight;
+        if (y < 0) return canvas.canvasHeight;
         return y;
     }
 
     /**
-     * the snake has a head and tail,
-     * for each frame, the snake's head will move to the next place
-     * and the snake's tail will be removed
      * @param direction the direction snake move
+     * @effect add a new head based on direction to this.snake
      */
     private moveSnakeHead(direction: Direction): void {
-        const currentSnakeHead = this.snake[0];
+        const head = this.snake[0];
 
         switch (direction) {
             case Direction.UP:
                 this.snake.unshift(
                     new Block(Category.BODY, {
-                        x: currentSnakeHead.axies.x,
-                        y: this.resetBoundaryY(
-                            currentSnakeHead.axies.y - bodyBlockLength
-                        ),
+                        x: head.axies.x,
+                        y: this.resetBoundaryY(head.axies.y - bodyBlockLength),
                     })
                 );
                 break;
             case Direction.LEFT:
                 this.snake.unshift(
                     new Block(Category.BODY, {
-                        x: this.resetBoundaryX(
-                            currentSnakeHead.axies.x - bodyBlockLength
-                        ),
-                        y: currentSnakeHead.axies.y,
+                        x: this.resetBoundaryX(head.axies.x - bodyBlockLength),
+                        y: head.axies.y,
                     })
                 );
                 break;
             case Direction.DOWN:
                 this.snake.unshift(
                     new Block(Category.BODY, {
-                        x: currentSnakeHead.axies.x,
-                        y: this.resetBoundaryY(
-                            currentSnakeHead.axies.y + bodyBlockLength
-                        ),
+                        x: head.axies.x,
+                        y: this.resetBoundaryY(head.axies.y + bodyBlockLength),
                     })
                 );
                 break;
             case Direction.RIGHT:
                 this.snake.unshift(
                     new Block(Category.BODY, {
-                        x: this.resetBoundaryX(
-                            currentSnakeHead.axies.x + bodyBlockLength
-                        ),
-                        y: currentSnakeHead.axies.y,
+                        x: this.resetBoundaryX(head.axies.x + bodyBlockLength),
+                        y: head.axies.y,
                     })
                 );
                 break;
@@ -140,17 +137,20 @@ export class Snake {
         }
     }
 
-    private deleteSnakeTail() {
+    /**
+     * @effect remove the this.snake's last element
+     */
+    private deleteSnakeTail(): void {
         this.snake.pop();
     }
 
-    private drawSnake() {
+    private drawSnake(): void {
         this.snake.forEach((block) => {
             block.drawBlockOnCanvas();
         });
     }
 
-    private isEqualAxies(object1: Axies, object2: Axies) {
+    private isEqualAxies(object1: Axies, object2: Axies): boolean {
         const keys1 = Object.keys(object1);
         const keys2 = Object.keys(object2);
 
@@ -172,6 +172,7 @@ export class Snake {
         const headLocation = head.axies;
         obstacles.forEach((obstacle, index) => {
             if (this.isEqualAxies(obstacle.axies, headLocation)) {
+                //TODO: maybe a fragile part, iterate while modify same array
                 obstacles.splice(index, 1);
                 this.healthPoint -= 1;
                 this.initSnake();
@@ -185,18 +186,21 @@ export class Snake {
         });
     }
 
-    public checkSnakeBody(){
+    public checkSnakeBody(): void {
         const head = this.snake[0];
         const headLocation = head.axies;
         const snakeBody = this.snake.slice(1);
-        snakeBody.forEach(block => {
-            if(this.isEqualAxies(block.axies, headLocation)){
+        snakeBody.forEach((block) => {
+            if (this.isEqualAxies(block.axies, headLocation)) {
                 this.healthPoint -= 1;
                 this.initSnake();
             }
-        })
+        });
     }
 
+    /**
+     * @effect this.snake will add a new head to its direction and delete its tail, then the snake will be drawn
+     */
     public init(): void {
         this.moveSnakeHead(this.direction);
         this.deleteSnakeTail();

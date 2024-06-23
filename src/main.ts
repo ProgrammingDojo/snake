@@ -11,7 +11,7 @@ class Main {
                 canvas.canvasHeight
             );
             game.init();
-        }, 500);
+        }, 200);
     }
 }
 

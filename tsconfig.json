@@ -4,6 +4,7 @@
     "sourceMap": true,
     "lib": ["es5", "dom"],
     "noUnusedLocals": true,
+    "moduleResolution": "Bundler",
     "module": "ES2015",
     "rootDir": "./src",
     "outDir": "./dist",

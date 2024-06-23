@@ -22,7 +22,7 @@ export interface Axies {
  * Block is the basic unit that forms the snake, food and obstacle, it's a square
  */
 export class Block {
-    public sideLength = 10;
+    public readonly sideLength = 10;
     constructor(public category: Category, public axies: Axies) {}
 
     chooseColorByCategory(canvasContext: CanvasRenderingContext2D): void {

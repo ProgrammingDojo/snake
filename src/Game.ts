@@ -31,6 +31,7 @@ export class Game {
      * @returns a x or y axis value that is on grid
      */
     getValidAxisNumber(x: number): number {
+        //TODO: Logic bug, should not allow the repeat usage of a same point
         const validAxisNumberList = [];
         const maxBlockNumber = Math.floor(x / blockLength);
         for (let i = 0; i < maxBlockNumber; i++) {
