@@ -49,25 +49,43 @@ export class Snake {
      * @effect change this.direction based on keyboard press
      */
     private directionHandler(event: KeyboardEvent): void {
+        const snakeHeadX = this.snake[0].axies.x;
+        const snakeHeadY = this.snake[0].axies.y;
         switch (event.key.toLowerCase()) {
             case "w":
-                // prevent the snake directly turn to its opposite side.
-                if (this.direction !== Direction.DOWN) {
+                // prevent the snake directly turn to its opposite side, or go up or down when it's on the edge
+                if (
+                    this.direction !== Direction.DOWN &&
+                    snakeHeadX !== 0 &&
+                    snakeHeadX !== canvas.canvasWidth
+                ) {
                     this.direction = Direction.UP;
                 }
                 break;
             case "a":
-                if (this.direction !== Direction.RIGHT) {
+                if (
+                    this.direction !== Direction.RIGHT &&
+                    snakeHeadY !== 0 &&
+                    snakeHeadY !== canvas.canvasWidth
+                ) {
                     this.direction = Direction.LEFT;
                 }
                 break;
             case "s":
-                if (this.direction !== Direction.UP) {
+                if (
+                    this.direction !== Direction.UP &&
+                    snakeHeadX !== 0 &&
+                    snakeHeadX !== canvas.canvasWidth
+                ) {
                     this.direction = Direction.DOWN;
                 }
                 break;
             case "d":
-                if (this.direction !== Direction.LEFT) {
+                if (
+                    this.direction !== Direction.LEFT &&
+                    snakeHeadY !== 0 &&
+                    snakeHeadY !== canvas.canvasWidth
+                ) {
                     this.direction = Direction.RIGHT;
                 }
                 break;
@@ -138,7 +156,7 @@ export class Snake {
     }
 
     /**
-     * @effect remove the this.snake's last element
+     * @effects remove the this.snake's last element
      */
     private deleteSnakeTail(): void {
         this.snake.pop();
@@ -176,16 +194,20 @@ export class Snake {
                 obstacles.splice(index, 1);
                 this.healthPoint -= 1;
                 this.initSnake();
+                return;
             }
         });
         foods.forEach((food, index) => {
             if (this.isEqualAxies(food.axies, headLocation)) {
                 foods.splice(index, 1);
                 this.moveSnakeHead(this.direction);
+                return;
             }
         });
     }
-
+    /**
+     * @effects it will initiate the snake if the snake eat its own body, it will not effect this.snake
+     */
     public checkSnakeBody(): void {
         const head = this.snake[0];
         const headLocation = head.axies;
@@ -194,6 +216,7 @@ export class Snake {
             if (this.isEqualAxies(block.axies, headLocation)) {
                 this.healthPoint -= 1;
                 this.initSnake();
+                return;
             }
         });
     }
