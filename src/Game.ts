@@ -30,10 +30,10 @@ export class Game {
      * @param x send the canvas width or height into this utility function
      * @returns a x or y axis value that is on grid
      */
-    getValidAxisNumber(x: number): number {
+    private getValidAxisNumber(maxLength: number): number {
         //TODO: Logic bug, should not allow the repeat usage of a same point
         const validAxisNumberList = [];
-        const maxBlockNumber = Math.floor(x / blockLength);
+        const maxBlockNumber = Math.floor(maxLength / blockLength);
         for (let i = 0; i < maxBlockNumber; i++) {
             validAxisNumberList.push(i * blockLength);
         }
@@ -41,7 +41,7 @@ export class Game {
         return validAxisNumberList[randomNumber];
     }
 
-    createObstacle() {
+    private createObstacle() {
         for (let i = 0; i < this.levelObstacleNumber; i++) {
             this.obstacles.push(
                 new Block(Category.OBSTACLE, {
@@ -52,7 +52,7 @@ export class Game {
         }
     }
 
-    createFoods() {
+    private createFoods() {
         for (let i = 0; i < this.levelHealthNumber; i++) {
             this.foods.push(
                 new Block(Category.FOOD, {
@@ -63,13 +63,24 @@ export class Game {
         }
     }
 
-    drawObstaclesAndFoods() {
+    private drawObstaclesAndFoods() {
         for (const obstacle of this.obstacles) {
             obstacle.drawBlockOnCanvas();
         }
         for (const health of this.foods) {
             health.drawBlockOnCanvas();
         }
+    }
+
+    public isGameover(): boolean {
+        if (snake.healthPoint <= 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public setGameStatus(): [number, number] {
+        return [snake.healthPoint, snake.score];
     }
 
     public init() {

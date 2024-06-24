@@ -1,16 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Snake</title>
-  </head>
-  <body>
-    <canvas
-      id="canvas"
-      style="border: 1px solid black;"
-    >
-    </canvas>
-  </body>
-  <script type="module" src="./dist/Main.js"></script>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <head>
+            <link rel="stylesheet" href="styles.css" />
+        </head>
+        <title>Snake</title>
+    </head>
+    <body>
+        <canvas id="canvas" style="border: 1px solid black"> </canvas>
+        <div class="dashboard">
+            <div class="dashboard__health">
+                Health: <span class="dashboard__health-number"></span>
+            </div>
+            <div class="dashboard__score">Score: <span class="dashboard__score-number"></span></div>
+        </div>
+        <div class="btn-group">
+            <button id="reset">Reset</button>
+        </div>
+    </body>
+    <script type="module" src="./dist/Main.js"></script>
 </html>

@@ -17,15 +17,14 @@ export enum Direction {
 export class Snake {
     private direction: Direction;
     private snake: Block[] = [];
-    private healthPoint = 3;
-    constructor() {
+    constructor(public healthPoint = 3, public score = 0) {
         this.initSnake();
         // Bind the directionHandler method to this instance
         this.directionHandler = this.directionHandler.bind(this);
     }
     /**
-     * @effect: initiate this.snake
-     * @effect: initiate this.direction
+     * @effects: initiate this.snake
+     * @effects: initiate this.direction
      */
     private initSnake(): void {
         this.snake = [];
@@ -40,6 +39,9 @@ export class Snake {
         }
     }
 
+    /**
+     * @effects listen for keydown event
+     */
     public registerDirectionHandler(): void {
         window.addEventListener("keydown", this.directionHandler);
     }
@@ -112,7 +114,7 @@ export class Snake {
 
     /**
      * @param direction the direction snake move
-     * @effect add a new head based on direction to this.snake
+     * @effects add a new head based on direction to this.snake
      */
     private moveSnakeHead(direction: Direction): void {
         const head = this.snake[0];
@@ -185,6 +187,14 @@ export class Snake {
         return true;
     }
 
+    /**
+     * @param {Block[]} obstacles - as description
+     * @param {Block[]} foods - as description
+     * @effects obstacles: remove obstacle if hit
+     * @effects this.healthPoint: reduce healthPoint if hit
+     * @effects foods: reduce food if hit
+     * @effects this.snake: it may add a snake head if food is hit
+     */
     public checkObstacleOrHealth(obstacles: Block[], foods: Block[]): void {
         const head = this.snake[0];
         const headLocation = head.axies;
@@ -192,7 +202,7 @@ export class Snake {
             if (this.isEqualAxies(obstacle.axies, headLocation)) {
                 //TODO: maybe a fragile part, iterate while modify same array
                 obstacles.splice(index, 1);
-                this.healthPoint -= 1;
+                this.healthPoint--;
                 this.initSnake();
                 return;
             }
@@ -201,6 +211,7 @@ export class Snake {
             if (this.isEqualAxies(food.axies, headLocation)) {
                 foods.splice(index, 1);
                 this.moveSnakeHead(this.direction);
+                this.score++;
                 return;
             }
         });
@@ -222,7 +233,7 @@ export class Snake {
     }
 
     /**
-     * @effect this.snake will add a new head to its direction and delete its tail, then the snake will be drawn
+     * @effects this.snake will add a new head to its direction and delete its tail, then the snake will be drawn
      */
     public init(): void {
         this.moveSnakeHead(this.direction);
