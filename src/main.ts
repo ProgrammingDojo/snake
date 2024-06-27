@@ -1,5 +1,6 @@
 import { Game } from "./Game.js";
 import { canvas } from "./Canvas.js";
+import { Snake } from "./Snake.js";
 
 const canvasContext = canvas.canvasContext;
 
@@ -73,7 +74,8 @@ class Main {
 let app: Main | null = null;
 
 function init() {
-    const game = new Game();
+    const snake = new Snake();
+    const game = new Game(snake);
     if (app) {
         app.stop();
     }

@@ -9,21 +9,18 @@ const blockLength = blockSample.sideLength;
 const maxBlockNumber =
     (canvasWidth / blockLength) * (canvasHeight / blockLength);
 
-const snake = new Snake();
-snake.registerDirectionHandler();
-
 export class Game {
     private levelObstacleNumber =
         Math.floor(maxBlockNumber * 0.01) * this.level;
     private levelHealthNumber = Math.floor(maxBlockNumber * 0.01) * this.level;
+    private obstacles: Block[] = [];
+    private foods: Block[] = [];
 
-    constructor(
-        public level = 1,
-        private obstacles: Block[] = [],
-        private foods: Block[] = []
-    ) {
+    constructor(private snake: Snake, public level = 1) {
         this.createFoods();
         this.createObstacle();
+        this.snake = snake;
+        snake.registerDirectionHandler();
     }
     /**
      *
@@ -73,20 +70,20 @@ export class Game {
     }
 
     public isGameover(): boolean {
-        if (snake.healthPoint <= 0) {
+        if (this.snake.healthPoint <= 0) {
             return true;
         }
         return false;
     }
 
     public setGameStatus(): [number, number] {
-        return [snake.healthPoint, snake.score];
+        return [this.snake.healthPoint, this.snake.score];
     }
 
     public init() {
         this.drawObstaclesAndFoods();
-        snake.init();
-        snake.checkObstacleOrHealth(this.obstacles, this.foods);
-        snake.checkSnakeBody();
+        this.snake.init();
+        this.snake.checkObstacleOrHealth(this.obstacles, this.foods);
+        this.snake.checkSnakeBody();
     }
 }
