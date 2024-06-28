@@ -10,13 +10,17 @@ const maxBlockNumber =
     (canvasWidth / blockLength) * (canvasHeight / blockLength);
 
 export class Game {
-    private levelObstacleNumber =
-        Math.floor(maxBlockNumber * 0.01) * this.level;
-    private levelHealthNumber = Math.floor(maxBlockNumber * 0.01) * this.level;
+    public level: number;
+    private levelObstacleNumber: number;
+    private levelFoodsNumber: number;
     private obstacles: Block[] = [];
     private foods: Block[] = [];
 
-    constructor(private snake: Snake, public level = 1) {
+    constructor(private snake: Snake) {
+        this.level = 1;
+        this.levelObstacleNumber =
+            Math.floor(maxBlockNumber * 0.01) * this.level;
+        this.levelFoodsNumber = Math.floor(maxBlockNumber * 0.01) * this.level;
         this.createFoods();
         this.createObstacle();
         this.snake = snake;
@@ -49,8 +53,11 @@ export class Game {
         }
     }
 
-    private createFoods() {
-        for (let i = 0; i < this.levelHealthNumber; i++) {
+    /**
+     * @effects this.foods create foods on the canvas
+     */
+    private createFoods():void {
+        for (let i = 0; i < this.levelFoodsNumber; i++) {
             this.foods.push(
                 new Block(Category.FOOD, {
                     x: this.getValidAxisNumber(canvasWidth),
@@ -67,6 +74,13 @@ export class Game {
         for (const health of this.foods) {
             health.drawBlockOnCanvas();
         }
+    }
+
+    public isLevelUp(): boolean {
+        if (this.snake.score >= this.levelFoodsNumber) {
+            return true;
+        }
+        return false;
     }
 
     public isGameover(): boolean {

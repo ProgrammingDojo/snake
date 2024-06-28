@@ -5,15 +5,15 @@ import { Snake } from "./Snake.js";
 const canvasContext = canvas.canvasContext;
 
 class Main {
-    private healthNumber:number;
-    private scoreNumber:number;
+    private healthNumber: number;
+    private scoreNumber: number;
     private intervalId: NodeJS.Timeout | null = null;
-    private isGameOver:boolean;
+    private isGameOver: boolean;
+    private isLevelUp: boolean;
 
     constructor(private game: Game) {
-        this.healthNumber = 3;
-        this.scoreNumber = 0;
         this.isGameOver = false;
+        this.isLevelUp = false;
     }
 
     private decideGameOver(game: Game): void {
@@ -21,14 +21,25 @@ class Main {
             this.isGameOver = true;
             this.stop();
             this.cleanCanvas();
-            canvasContext.font = "bold 28px black serif";
-            canvasContext.fillText(
-                "GAME OVER",
-                canvas.canvasWidth / 2 - 87,
-                canvas.canvasHeight / 2 + 10
-            );
+            this.drawGameOver();
             return;
         }
+    }
+
+    private decideLevelUp(game: Game): void {
+        if (game.isLevelUp()) {
+            this.game.level++;
+            this.isLevelUp = true;
+        }
+    }
+
+    private drawGameOver() {
+        canvasContext.font = "bold 28px black serif";
+        canvasContext.fillText(
+            "GAME OVER",
+            canvas.canvasWidth / 2 - 87,
+            canvas.canvasHeight / 2 + 10
+        );
     }
 
     private cleanCanvas(): void {
@@ -38,12 +49,15 @@ class Main {
     public main() {
         this.intervalId = setInterval(() => {
             this.decideGameOver(this.game);
-            if(this.isGameOver) return;
+            if (this.isGameOver) return;
+            this.decideLevelUp(this.game);
+            if (this.isLevelUp) return;
             this.cleanCanvas();
             this.game.init();
             [this.healthNumber, this.scoreNumber] = this.game.setGameStatus();
             this.setHealthDashboard();
             this.setScoreDashboard();
+            this.setLevelDashboard();
         }, 200);
     }
 
@@ -52,6 +66,14 @@ class Main {
             clearInterval(this.intervalId);
             this.intervalId = null;
         }
+    }
+
+    private setLevelDashboard(): void {
+        const health =
+            (document.getElementsByClassName(
+                "dashboard__level-number"
+            )[0] as HTMLElement) || null;
+        health.innerText = String(this.game.level);
     }
 
     private setHealthDashboard(): void {
