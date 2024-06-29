@@ -16,7 +16,7 @@ export enum Direction {
 
 export class Snake {
     private direction: Direction;
-    private snake: Block[] = [];
+    public snake: Block[] = [];
     constructor(public healthPoint = 3, public score = 0) {
         this.initSnake();
         // Bind the directionHandler method to this instance
@@ -200,7 +200,6 @@ export class Snake {
         const headLocation = head.axies;
         obstacles.forEach((obstacle, index) => {
             if (this.isEqualAxies(obstacle.axies, headLocation)) {
-                //TODO: maybe a fragile part, iterate while modify same array
                 obstacles.splice(index, 1);
                 this.healthPoint--;
                 this.initSnake();

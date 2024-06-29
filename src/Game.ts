@@ -1,5 +1,5 @@
 import { canvas } from "./Canvas.js";
-import { Block, Category } from "./Block.js";
+import { Block, Category, Axies } from "./Block.js";
 import { Snake } from "./Snake.js";
 
 const canvasWidth = canvas.canvasWidth;
@@ -15,39 +15,76 @@ export class Game {
     private levelFoodsNumber: number;
     private obstacles: Block[] = [];
     private foods: Block[] = [];
+    private axisPoints = new Set<Axies>();
 
     constructor(private snake: Snake) {
         this.level = 1;
+        //use level to decide how many blocks and foods will be set
         this.levelObstacleNumber =
             Math.floor(maxBlockNumber * 0.01) * this.level;
         this.levelFoodsNumber = Math.floor(maxBlockNumber * 0.01) * this.level;
+        this.createAxisPoints();
         this.createFoods();
         this.createObstacle();
         this.snake = snake;
         snake.registerDirectionHandler();
     }
+
     /**
-     *
-     * @param x send the canvas width or height into this utility function
-     * @returns a x or y axis value that is on grid
+     * @effects this.axisPoints create a set for all the valid points that can be used as foods or obstacles
      */
-    private getValidAxisNumber(maxLength: number): number {
-        //TODO: Logic bug, should not allow the repeat usage of a same point
-        const validAxisNumberList = [];
-        const maxBlockNumber = Math.floor(maxLength / blockLength);
-        for (let i = 0; i < maxBlockNumber; i++) {
-            validAxisNumberList.push(i * blockLength);
+    private createAxisPoints() {
+        const xBlockNumber = Math.floor(canvasWidth / blockLength);
+        const yBlockNumber = Math.floor(canvasHeight / blockLength);
+        for (let i = 0; i < xBlockNumber; i++) {
+            const x = blockLength * i;
+            for (let j = 0; j < yBlockNumber; j++) {
+                const y = blockLength * j;
+                this.axisPoints.add({ x, y });
+            }
         }
-        const randomNumber = Math.floor(Math.random() * (maxBlockNumber + 1));
-        return validAxisNumberList[randomNumber];
+        // Remove the inital starting points of the snake
+        const initSnakeBody = this.snake.snake.map((block) => {
+            return block.axies;
+        });
+        initSnakeBody.forEach((axies) => {
+            for (let item of this.axisPoints) {
+                if (item.x === axies.x && item.y === axies.y) {
+                    this.axisPoints.delete(item);
+                    break;
+                }
+            }
+        });
+    }
+
+    private getRandomAndDeleteAxisPoint<Axies>(set: Set<Axies>): Axies {
+        if (set.size === 0) {
+            throw new Error("The this.axisPoints set is empty");
+        }
+
+        const randomIndex = Math.floor(Math.random() * set.size);
+        let result: Axies;
+        let index = 0;
+
+        for (let item of set) {
+            if (index === randomIndex) {
+                result = item;
+                set.delete(item);
+                break;
+            }
+            index++;
+        }
+
+        return result;
     }
 
     private createObstacle() {
         for (let i = 0; i < this.levelObstacleNumber; i++) {
+            const { x, y } = this.getRandomAndDeleteAxisPoint(this.axisPoints);
             this.obstacles.push(
                 new Block(Category.OBSTACLE, {
-                    x: this.getValidAxisNumber(canvasWidth),
-                    y: this.getValidAxisNumber(canvasHeight),
+                    x,
+                    y,
                 })
             );
         }
@@ -56,12 +93,13 @@ export class Game {
     /**
      * @effects this.foods create foods on the canvas
      */
-    private createFoods():void {
+    private createFoods(): void {
         for (let i = 0; i < this.levelFoodsNumber; i++) {
+            const { x, y } = this.getRandomAndDeleteAxisPoint(this.axisPoints);
             this.foods.push(
                 new Block(Category.FOOD, {
-                    x: this.getValidAxisNumber(canvasWidth),
-                    y: this.getValidAxisNumber(canvasHeight),
+                    x,
+                    y,
                 })
             );
         }
