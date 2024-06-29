@@ -34,7 +34,7 @@ class Main {
         }
     }
 
-    private drawGameOver() {
+    private drawGameOver(): void {
         canvasContext.font = "bold 28px black serif";
         canvasContext.fillText(
             "GAME OVER",
@@ -51,7 +51,7 @@ class Main {
         return 200 - this.level * 10;
     }
 
-    public main() {
+    public main():void {
         this.intervalId = setInterval(() => {
             this.decideGameOver(this.game);
             if (this.isGameOver) return;
@@ -70,7 +70,7 @@ class Main {
         }, this.setIntervalTime());
     }
 
-    public stop() {
+    public stop():void {
         if (this.intervalId !== null) {
             clearInterval(this.intervalId);
             this.intervalId = null;
