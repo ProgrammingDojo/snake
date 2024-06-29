@@ -10,6 +10,7 @@ class Main {
     private intervalId: NodeJS.Timeout | null = null;
     private isGameOver: boolean;
     private isLevelUp: boolean;
+    private level: number = 1;
 
     constructor(private game: Game) {
         this.isGameOver = false;
@@ -28,7 +29,7 @@ class Main {
 
     private decideLevelUp(game: Game): void {
         if (game.isLevelUp()) {
-            this.game.level++;
+            this.level++;
             this.isLevelUp = true;
         }
     }
@@ -46,19 +47,27 @@ class Main {
         canvasContext.clearRect(0, 0, canvas.canvasWidth, canvas.canvasHeight);
     }
 
+    private setIntervalTime(currentIntervalTime: number = 200): number {
+        return 200 - this.level * 10;
+    }
+
     public main() {
         this.intervalId = setInterval(() => {
             this.decideGameOver(this.game);
             if (this.isGameOver) return;
             this.decideLevelUp(this.game);
-            if (this.isLevelUp) return;
+            if (this.isLevelUp) {
+                const snake = new Snake(this.healthNumber, this.scoreNumber);
+                this.game = new Game(snake, this.level);
+                this.isLevelUp = false;
+            }
             this.cleanCanvas();
             this.game.init();
             [this.healthNumber, this.scoreNumber] = this.game.setGameStatus();
             this.setHealthDashboard();
             this.setScoreDashboard();
             this.setLevelDashboard();
-        }, 200);
+        }, this.setIntervalTime());
     }
 
     public stop() {
@@ -73,7 +82,7 @@ class Main {
             (document.getElementsByClassName(
                 "dashboard__level-number"
             )[0] as HTMLElement) || null;
-        health.innerText = String(this.game.level);
+        health.innerText = String(this.level);
     }
 
     private setHealthDashboard(): void {
@@ -97,7 +106,7 @@ let app: Main | null = null;
 
 function init() {
     const snake = new Snake();
-    const game = new Game(snake);
+    const game = new Game(snake, 1);
     if (app) {
         app.stop();
     }

@@ -10,15 +10,13 @@ const maxBlockNumber =
     (canvasWidth / blockLength) * (canvasHeight / blockLength);
 
 export class Game {
-    public level: number;
     private levelObstacleNumber: number;
     private levelFoodsNumber: number;
     private obstacles: Block[] = [];
     private foods: Block[] = [];
     private axisPoints = new Set<Axies>();
 
-    constructor(private snake: Snake) {
-        this.level = 1;
+    constructor(private snake: Snake, public level: number = 1) {
         //use level to decide how many blocks and foods will be set
         this.levelObstacleNumber =
             Math.floor(maxBlockNumber * 0.01) * this.level;
@@ -33,7 +31,7 @@ export class Game {
     /**
      * @effects this.axisPoints create a set for all the valid points that can be used as foods or obstacles
      */
-    private createAxisPoints() {
+    private createAxisPoints(): void {
         const xBlockNumber = Math.floor(canvasWidth / blockLength);
         const yBlockNumber = Math.floor(canvasHeight / blockLength);
         for (let i = 0; i < xBlockNumber; i++) {
@@ -57,6 +55,11 @@ export class Game {
         });
     }
 
+    /**
+     * @effects this.axisPoints will remove this selected axis point
+     * @param set this.axisPoints will be the input
+     * @returns the selected random axis point
+     */
     private getRandomAndDeleteAxisPoint<Axies>(set: Set<Axies>): Axies {
         if (set.size === 0) {
             throw new Error("The this.axisPoints set is empty");
@@ -78,7 +81,7 @@ export class Game {
         return result;
     }
 
-    private createObstacle() {
+    private createObstacle(): void {
         for (let i = 0; i < this.levelObstacleNumber; i++) {
             const { x, y } = this.getRandomAndDeleteAxisPoint(this.axisPoints);
             this.obstacles.push(
@@ -90,9 +93,6 @@ export class Game {
         }
     }
 
-    /**
-     * @effects this.foods create foods on the canvas
-     */
     private createFoods(): void {
         for (let i = 0; i < this.levelFoodsNumber; i++) {
             const { x, y } = this.getRandomAndDeleteAxisPoint(this.axisPoints);
@@ -105,17 +105,20 @@ export class Game {
         }
     }
 
+    /**
+     * @effects draw obstacle and foods on canvas
+     */
     private drawObstaclesAndFoods() {
         for (const obstacle of this.obstacles) {
             obstacle.drawBlockOnCanvas();
         }
-        for (const health of this.foods) {
-            health.drawBlockOnCanvas();
+        for (const food of this.foods) {
+            food.drawBlockOnCanvas();
         }
     }
 
     public isLevelUp(): boolean {
-        if (this.snake.score >= this.levelFoodsNumber) {
+        if (this.foods.length <= 0) {
             return true;
         }
         return false;
